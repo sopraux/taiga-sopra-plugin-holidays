@@ -1,0 +1,36 @@
+div(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminController as ctrl")
+    header
+        h1
+            span.project-name {{::project.name}}
+            span.green {{::sectionName}}
+
+    form
+        fieldset
+            div.check-item
+                span Ignore weekends
+                div.check
+                    input(type="checkbox" name="ignore_weekends" ng-model="holidays.is_ignoring_weekends")
+                    div
+                    span.check-text.check-yes(translate="COMMON.YES")
+                    span.check-text.check-no(translate="COMMON.NO")
+        ///fieldset
+            h2 Ignore specific days
+            div.check-item
+                span Ignore selected days
+                div.check
+                    input(type="checkbox" name="ignore_days" ng-model="holidays.is_ignoring_days")
+                    div
+                    span.check-text.check-yes(translate="COMMON.YES")
+                    span.check-text.check-no(translate="COMMON.NO")
+        
+            // Date picker
+
+
+        button.button-green.submit-button(
+            type="submit"
+            title="{{'COMMON.SAVE' | translate}}"
+            translate="COMMON.SAVE"
+        )
+
+        tg-svg(svg-icon="icon-question")
+        span Do you need help? Check out our support page!
