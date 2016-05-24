@@ -26,7 +26,7 @@ SUNDAY = 6
 
 def get_working_days(milestone):
     project                 = milestone.project
-    holidays                = m.BankHolidays.objects.get(project=project)
+    holidays, created       = m.BankHolidays.objects.get_or_create(project=project)
     is_ignoring_weekends    = holidays.is_ignoring_weekends
     is_ignoring_days        = holidays.is_ignoring_days
     days_ignored            = holidays.days_ignored
