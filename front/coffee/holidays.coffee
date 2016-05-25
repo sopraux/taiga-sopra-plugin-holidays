@@ -44,7 +44,7 @@ class BankHolidaysAdmin
 
             promise.then (bank_holidays) =>
                 @scope.holidays = {
-                    project: @scope.projectId
+                    project: @scope.projectId,
                     is_ignoring_weekends: false,
                     is_ignoring_days: false,
                     days_ignored: []
