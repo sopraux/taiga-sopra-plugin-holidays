@@ -1,7 +1,5 @@
-# Copyright (C) 2014-2016 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2016 Jesús Espino <jespinog@gmail.com>
-# Copyright (C) 2014-2016 David Barragán <bameda@dbarragan.com>
-# Copyright (C) 2014-2016 Alejandro Alonso <alejandro.alonso@kaleidos.net>
+# Copyright (C) 2016 Sopra Steria
+# Copyright (C) 2016 David Peris <david.peris92@gmail.com>
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
@@ -21,12 +19,12 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class BankHolidays(models.Model):
-    project = models.ForeignKey("projects.Project", null=False, blank=False,
+    project = models.ForeignKey("projects.Project", null=True, blank=True,
                                 related_name="bank_holidays")
 
-    is_ignoring_weekends = models.BooleanField(default=False, null=False, blank=True,
+    is_ignoring_weekends = models.NullBooleanField(default=False, null=True, blank=True,
                                      verbose_name=_("is ignoring weekends"))
-    is_ignoring_days = models.BooleanField(default=False, null=False, blank=True,
+    is_ignoring_days = models.NullBooleanField(default=False, null=True, blank=True,
                                      verbose_name=_("is ignoring specific days"))
     days_ignored = DateTimeArrayField(blank=True, null=True,
                                       default=[],

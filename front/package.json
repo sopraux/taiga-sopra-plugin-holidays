@@ -1,6 +1,6 @@
 {
   "name": "taiga-contrib-holidays",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Taiga contrib plugin for bank holidays",
   "main": "index.js",
   "repository": {

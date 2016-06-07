@@ -1,0 +1,7 @@
+*.pyc
+*.egg
+*.egg-info
+back/taiga_contrib_holidays/__pycache__/
+back/.eggs/
+_*/
+front/node_modules/

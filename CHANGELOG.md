@@ -1,5 +1,8 @@
 # Changelog #
 
+## 0.0.3 (2016-06-07)
+- Changed bug model
+
 ## 0.0.2 (2016-05-24)
 - Fixed problem with creation of holidays
 
