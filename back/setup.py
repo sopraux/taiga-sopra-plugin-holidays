@@ -12,7 +12,6 @@ setup(
     keywords = 'taiga, bank, holidays, integration',
     author = 'David Peris Martinez',
     author_email = 'david.peris92@gmail.com',
-    url = 'https://github.com/taigaio/taiga-contrib-holidays',
     license = 'AGPL',
     include_package_data = True,
     packages = find_packages(),
