@@ -105,6 +105,7 @@ In the plugin source dir `taiga-contrib-holidays/front` run
 
 ```bash
 npm install
+bower install
 ```
 and use:
 
