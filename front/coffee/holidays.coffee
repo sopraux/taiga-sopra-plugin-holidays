@@ -46,23 +46,52 @@ class BankHolidaysAdmin
                 }
                 if bank_holidays.length > 0
                     @scope.holidays = bank_holidays[0]
-                #title = "#{@scope.sectionName} - Plugins - #{@scope.project.name}" # i18n
-                #description = @scope.project.description
-            #@appMetaService.setAll(title, description)
+
+                day_picker = $('#day_picker')
+
+                day_picker.multiDatesPicker({
+                    firstDay: 1,
+                    dateFormat: 'yy-mm-dd'
+                })
+
+                if @scope.holidays.is_ignoring_weekends
+                    day_picker.multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends })
+
+
+                days_ignored = @array_str_to_date @scope.holidays.days_ignored
+
+                if days_ignored.length > 0
+                    day_picker.multiDatesPicker 'addDates', days_ignored
+
+
+    array_str_to_date: (array) ->
+        result = array.substr(1, array.length-2).split('"').join('')
+        result = result.split(',')
+        result = result.map( (el) -> new Date(el.trim()) )
 
 
 
 BankHolidaysDirective = ($repo, $confirm, $loading) ->
     link = ($scope, $el, $attrs) ->
-        form = $el.find("form").checksley({"onlyOneErrorElement": true})
-        submit = debounce 2000, (event) =>
-            event.preventDefault()
+        $scope.changeWeekends = () =>
+            if $scope.holidays.is_ignoring_weekends
+                day_picker.multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends })
+            else
+                day_picker.multiDatesPicker({ beforeShowDay: () -> [true] })
 
-            return if not form.validate()
+            return false
+
+
+        save = debounce 2000, (event) =>
+            event.preventDefault()
 
             currentLoading = $loading()
                 .target(submitButton)
                 .start()
+
+            days_ignored = day_picker.multiDatesPicker 'getDates', 'object'
+            days_ignored = days_ignored.map( (el) -> $.datepicker.formatDate 'dd-mm-yy', el )
+            $scope.holidays.days_ignored = days_ignored.filter( (date) -> !isNaN(date) )
 
             if not $scope.holidays.id
                 promise = $repo.create("holidays", $scope.holidays)
@@ -79,16 +108,27 @@ BankHolidaysDirective = ($repo, $confirm, $loading) ->
 
             promise.then null, (data) ->
                 currentLoading.finish()
-                form.setErrors(data)
                 if data._error_message
                     $confirm.notify("error", data._error_message)
 
-        submitButton = $el.find(".submit-button")
 
-        $el.on "submit", "form", submit
-        $el.on "click", ".submit-button", submit
+        reset = debounce 2000, (event) =>
+            event.preventDefault()
+            day_picker.multiDatesPicker 'resetDates', 'picked'
+
+
+
+        submitButton = $el.find(".save-button")
+
+        day_picker = $('#day_picker')
+
+        $el.on "click", ".save-button", save
+
+        $el.on "click", "#reset_picker", reset
+
 
     return {link:link}
+
 
 module = angular.module('taigaContrib.bankholidays', [])
 
