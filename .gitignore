@@ -3,5 +3,7 @@
 *.egg-info
 back/taiga_contrib_holidays/__pycache__/
 back/.eggs/
+back/env
 _*/
 front/node_modules/
+front/bower_components/
