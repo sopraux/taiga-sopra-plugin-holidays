@@ -1,0 +1,33 @@
+.holidays {
+    .save-button {
+        width: 100%;
+    }
+
+    .picker-container {
+        text-align: center;
+        width: 100%;
+        margin: 20px 0;
+    }
+    .button-container {
+        text-align: right;
+        width: 100%;
+    }
+    .picker {
+        display: inline-block;
+        .ui-state-highlight .ui-state-default {
+            background: red;
+            color: white;
+        }
+        .ui-state-highlight.ui-datepicker-today .ui-state-default {
+            background: darkred;
+            color: white;
+        }
+        .ui-datepicker-today .ui-state-active {
+            background: #fbf9ee url("images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+        }
+        .ui-state-active {
+            background: #e6e6e6 url("images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+            color: #555;
+        }
+    }
+}
