@@ -1,4 +1,4 @@
-div(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminController as ctrl")
+div.holidays(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminController as ctrl")
     header
         h1
             span.project-name {{::project.name}}
@@ -9,28 +9,31 @@ div(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminController as 
             div.check-item
                 span Ignore weekends
                 div.check
-                    input(type="checkbox" name="ignore_weekends" ng-model="holidays.is_ignoring_weekends")
+                    input(
+                        type="checkbox" name="ignore_weekends"
+                        ng-model="holidays.is_ignoring_weekends"
+                        ng-change="changeWeekends()"
+                    )
                     div
                     span.check-text.check-yes(translate="COMMON.YES")
                     span.check-text.check-no(translate="COMMON.NO")
-        ///fieldset
-            h2 Ignore specific days
+        fieldset
             div.check-item
-                span Ignore selected days
+                span Ignore specific days
                 div.check
                     input(type="checkbox" name="ignore_days" ng-model="holidays.is_ignoring_days")
                     div
                     span.check-text.check-yes(translate="COMMON.YES")
                     span.check-text.check-no(translate="COMMON.NO")
         
-            // Date picker
+            div.picker-container
+                div.button-container
+                    button.button-gray(id="reset_picker" ng-show="holidays.is_ignoring_days") RESET
+                div.picker(id="day_picker" ng-show="holidays.is_ignoring_days")
 
 
-        button.button-green.submit-button(
+        button.button-green.save-button(
             type="submit"
             title="{{'COMMON.SAVE' | translate}}"
             translate="COMMON.SAVE"
         )
-
-        tg-svg(svg-icon="icon-question")
-        span Do you need help? Check out our support page!
