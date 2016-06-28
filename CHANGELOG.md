@@ -1,5 +1,8 @@
 # Changelog #
 
+## 0.1.0 (2016-06-28)
+- Added date picker for custom holidays
+
 ## 0.0.4 (2016-06-07)
 - Changed bug model
 
