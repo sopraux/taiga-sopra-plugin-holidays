@@ -28,10 +28,10 @@ SUNDAY = 6
 
 def get_working_days(milestone):
     project                 = milestone.project
-    holidays, created       = BankHolidays.objects.get_or_create(project=project)
-    is_ignoring_weekends    = holidays.is_ignoring_weekends
-    is_ignoring_days        = holidays.is_ignoring_days
-    days_ignored            = holidays.days_ignored
+    bank_holidays, created       = BankHolidays.objects.get_or_create(project=project)
+    is_ignoring_weekends    = bank_holidays.is_ignoring_weekends
+    is_ignoring_days        = bank_holidays.is_ignoring_days
+    holidays                = bank_holidays.holidays
 
     current_date    = milestone.estimated_start
     days_list       = []
@@ -40,7 +40,7 @@ def get_working_days(milestone):
 
         if is_ignoring_weekends and current_date.weekday() in (SATURDAY, SUNDAY):
             append = False
-        if is_ignoring_days and current_date in days_ignored:
+        if is_ignoring_days and current_date in holidays:
             append = False
         if append:
             days_list.append(current_date)

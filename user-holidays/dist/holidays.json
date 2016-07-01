@@ -1,0 +1,10 @@
+{
+    "name": "bank holidays",
+    "slug": "bank holidays",
+    "description": "Include bank holidays in Taiga.",
+    "type": "admin",
+    "module": "taigaContrib.bankholidays",
+    "css": "/plugins/holidays/holidays.css",
+    "template": "/plugins/holidays/holidays.html",
+    "js": "/plugins/holidays/holidays.js"
+}

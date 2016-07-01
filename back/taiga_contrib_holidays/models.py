@@ -18,32 +18,84 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###
 from django.db import models
+from django.conf import settings
 from djorm_pgarray.fields import DateArrayField
 from django.utils.translation import ugettext_lazy as _
 
-from .helpers import str_to_date
+from .helpers import prepare_dates
 
 
-class BankHolidays(models.Model):
-    project = models.ForeignKey("projects.Project", null=True, blank=True,
-                                related_name="bank_holidays")
+class Holidays(models.Model):
+    holidays = DateArrayField(
+                            blank=True,
+                            null=True,
+                            default=[],
+                            verbose_name=_("days ignored in burndown"))
 
-    is_ignoring_weekends = models.NullBooleanField(default=False, null=True, blank=True,
-                                     verbose_name=_("is ignoring weekends"))
-    is_ignoring_days = models.NullBooleanField(default=False, null=True, blank=True,
-                                     verbose_name=_("is ignoring specific days"))
-    days_ignored = DateArrayField(blank=True, null=True,
-                                      default=[],
-                                      verbose_name=_("days ignored in burndown"))
+
+    class Meta:
+        abstract = True
+        ordering = ["project"]
 
 
     def create(self, *args, **kwargs):
-        days_ignored = map(str_to_date, self.days_ignored)
-        self.days_ignored = filter(None, days_ignored)
+        self.holidays = prepare_dates(self.holidays)
         super().create(*args, **kwargs)
 
 
     def save(self, *args, **kwargs):
-        days_ignored = map(str_to_date, self.days_ignored)
-        self.days_ignored = filter(None, days_ignored)
+        self.holidays = prepare_dates(self.holidays)
         super().save(*args, **kwargs)
+
+
+
+
+class BankHolidays(Holidays):
+    project = models.OneToOneField("projects.Project",
+                                null=True,
+                                blank=True,
+                                related_name="bank_holidays",
+                                verbose_name=_("project"))
+
+    is_ignoring_weekends = models.NullBooleanField(
+                                    default=False,
+                                    null=True,
+                                    blank=True,
+                                    verbose_name=_("is ignoring weekends"))
+
+    is_ignoring_days = models.NullBooleanField(
+                                    default=False,
+                                    null=True,
+                                    blank=True,
+                                    verbose_name=_("is ignoring specific days"))
+
+
+
+    class Meta(Holidays.Meta):
+            verbose_name = "bank holidays"
+            verbose_name_plural = "bank holidays"
+
+
+
+class UserHolidays(Holidays):
+    project = models.ForeignKey("projects.Project",
+                                null=True,
+                                blank=True,
+                                related_name="user_holidays",
+                                verbose_name=_("project"))
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                            null=True,
+                            blank=True,
+                            related_name="user_holidays",
+                            verbose_name=_("user"))
+
+    max_days = models.PositiveIntegerField( blank=True,
+                                            null=True,
+                                            default=23,
+                                            verbose_name=_("maximum days of holidays per year"))
+
+
+    class Meta(Holidays.Meta):
+            verbose_name = "user holidays"
+            verbose_name_plural = "user holidays"

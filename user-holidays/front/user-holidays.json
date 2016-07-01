@@ -1,0 +1,11 @@
+{
+    "name": "user holidays",
+    "slug": "user holidays",
+    "description": "Include user holidays in Taiga.",
+    "type": "userSettings",
+    "userMenu": true,
+    "module": "taigaContrib.userHolidays",
+    "css": "/plugins/holidays/user-holidays.css",
+    "template": "/plugins/holidays/user-holidays.html",
+    "js": "/plugins/holidays/user-holidays.js"
+}

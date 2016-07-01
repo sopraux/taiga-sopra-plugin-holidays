@@ -1,23 +1,22 @@
-angular.module("templates").run(["$templateCache", function($templateCache) {$templateCache.put("/plugins/holidays/holidays.html","\n<div contrib-bank-holidays=\"contrib-bank-holidays\" ng-controller=\"ContribBankHolidaysAdminController as ctrl\" class=\"holidays\">\n  <header>\n    <h1><span class=\"project-name\">{{::project.name}}</span><span class=\"green\">{{::sectionName}}</span></h1>\n  </header>\n  <form>\n    <fieldset>\n      <div class=\"check-item\"><span>Ignore weekends</span>\n        <div class=\"check\">\n          <input type=\"checkbox\" name=\"ignore_weekends\" ng-model=\"bank_holidays.is_ignoring_weekends\" ng-change=\"changeWeekends()\"/>\n          <div></div><span translate=\"COMMON.YES\" class=\"check-text check-yes\"></span><span translate=\"COMMON.NO\" class=\"check-text check-no\"></span>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <div class=\"check-item\"><span>Ignore specific days</span>\n        <div class=\"check\">\n          <input type=\"checkbox\" name=\"ignore_days\" ng-model=\"bank_holidays.is_ignoring_days\"/>\n          <div></div><span translate=\"COMMON.YES\" class=\"check-text check-yes\"></span><span translate=\"COMMON.NO\" class=\"check-text check-no\"></span>\n        </div>\n      </div>\n      <div class=\"picker-container\">\n        <div class=\"button-container\">\n          <button id=\"reset_picker\" ng-show=\"bank_holidays.is_ignoring_days\" class=\"button-gray\">RESET</button>\n        </div>\n        <div id=\"day_picker\" ng-show=\"bank_holidays.is_ignoring_days\" class=\"picker\"></div>\n      </div>\n    </fieldset>\n    <button type=\"submit\" title=\"{{\'COMMON.SAVE\' | translate}}\" translate=\"COMMON.SAVE\" class=\"button-green save-button\"></button>\n  </form>\n</div>");}]);
+angular.module("templates").run(["$templateCache", function($templateCache) {$templateCache.put("/plugins/holidays/holidays.html","\n<div contrib-bank-holidays=\"contrib-bank-holidays\" ng-controller=\"ContribBankHolidaysAdminController as ctrl\" class=\"holidays\">\n  <header>\n    <h1><span class=\"project-name\">{{::project.name}}</span><span class=\"green\">{{::sectionName}}</span></h1>\n  </header>\n  <form>\n    <fieldset>\n      <div class=\"check-item\"><span>Ignore weekends</span>\n        <div class=\"check\">\n          <input type=\"checkbox\" name=\"ignore_weekends\" ng-model=\"holidays.is_ignoring_weekends\" ng-change=\"changeWeekends()\"/>\n          <div></div><span translate=\"COMMON.YES\" class=\"check-text check-yes\"></span><span translate=\"COMMON.NO\" class=\"check-text check-no\"></span>\n        </div>\n      </div>\n    </fieldset>\n    <fieldset>\n      <div class=\"check-item\"><span>Ignore specific days</span>\n        <div class=\"check\">\n          <input type=\"checkbox\" name=\"ignore_days\" ng-model=\"holidays.is_ignoring_days\"/>\n          <div></div><span translate=\"COMMON.YES\" class=\"check-text check-yes\"></span><span translate=\"COMMON.NO\" class=\"check-text check-no\"></span>\n        </div>\n      </div>\n      <div class=\"picker-container\">\n        <div class=\"button-container\">\n          <button id=\"reset_picker\" ng-show=\"holidays.is_ignoring_days\" class=\"button-gray\">RESET</button>\n        </div>\n        <div id=\"day_picker\" ng-show=\"holidays.is_ignoring_days\" class=\"picker\"></div>\n      </div>\n    </fieldset>\n    <button type=\"submit\" title=\"{{\'COMMON.SAVE\' | translate}}\" translate=\"COMMON.SAVE\" class=\"button-green save-button\"></button>\n  </form>\n</div>");}]);
 
 /*
- *  Taiga-contrib-holidays is a taiga plugin for manage bank holidays.
+ * Copyright (C) 2016 Sopra Steria
+ * Copyright (C) 2016 David Peris <david.peris92@gmail.com>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *  Copyright 2016 by Sopra Steria
- *  Copyright 2016 by David Peris <david.peris92@gmail.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU Affero General Public License as
- *    published by the Free Software Foundation, either version 3 of the
- *    License, or (at your option) any later version.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU Affero General Public License for more details.
- *
- *    You should have received a copy of the GNU Affero General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * File: holidays.coffee
  */
 
 (function() {
@@ -45,33 +44,33 @@ angular.module("templates").run(["$templateCache", function($templateCache) {$te
       this.scope.$on("project:loaded", (function(_this) {
         return function() {
           var promise;
-          promise = _this.repo.queryMany("bank_holidays", {
+          promise = _this.repo.queryMany("holidays", {
             project: _this.scope.projectId
           });
           return promise.then(function(bank_holidays) {
-            var day_picker, holidays;
-            _this.scope.bank_holidays = {
+            var day_picker, days_ignored;
+            _this.scope.holidays = {
               project: _this.scope.projectId,
               is_ignoring_weekends: false,
               is_ignoring_days: false,
-              holidays: []
+              days_ignored: []
             };
             if (bank_holidays.length > 0) {
-              _this.scope.bank_holidays = bank_holidays[0];
+              _this.scope.holidays = bank_holidays[0];
             }
             day_picker = $('#day_picker');
             day_picker.multiDatesPicker({
               firstDay: 1,
               dateFormat: 'yy-mm-dd'
             });
-            if (_this.scope.bank_holidays.is_ignoring_weekends) {
+            if (_this.scope.holidays.is_ignoring_weekends) {
               day_picker.multiDatesPicker({
                 beforeShowDay: $.datepicker.noWeekends
               });
             }
-            holidays = _this.array_str_to_date(_this.scope.bank_holidays.holidays);
-            if ((holidays != null) && holidays.length > 0) {
-              return day_picker.multiDatesPicker('addDates', holidays);
+            days_ignored = _this.array_str_to_date(_this.scope.holidays.days_ignored);
+            if (days_ignored.length > 0) {
+              return day_picker.multiDatesPicker('addDates', days_ignored);
             }
           });
         };
@@ -80,13 +79,11 @@ angular.module("templates").run(["$templateCache", function($templateCache) {$te
 
     BankHolidaysAdmin.prototype.array_str_to_date = function(array) {
       var result;
-      if ((array != null) && array.length > 0) {
-        result = array.substr(1, array.length - 2).split('"').join('');
-        result = result.split(',');
-        return result = result.map(function(el) {
-          return new Date(el.trim());
-        });
-      }
+      result = array.substr(1, array.length - 2).split('"').join('');
+      result = result.split(',');
+      return result = result.map(function(el) {
+        return new Date(el.trim());
+      });
     };
 
     return BankHolidaysAdmin;
@@ -99,7 +96,7 @@ angular.module("templates").run(["$templateCache", function($templateCache) {$te
       var day_picker, reset, save, submitButton;
       $scope.changeWeekends = (function(_this) {
         return function() {
-          if ($scope.bank_holidays.is_ignoring_weekends) {
+          if ($scope.holidays.is_ignoring_weekends) {
             day_picker.multiDatesPicker({
               beforeShowDay: $.datepicker.noWeekends
             });
@@ -115,25 +112,25 @@ angular.module("templates").run(["$templateCache", function($templateCache) {$te
       })(this);
       save = debounce(2000, (function(_this) {
         return function(event) {
-          var currentLoading, holidays, promise;
+          var currentLoading, days_ignored, promise;
           event.preventDefault();
           currentLoading = $loading().target(submitButton).start();
-          holidays = day_picker.multiDatesPicker('getDates', 'object');
-          holidays = holidays.map(function(el) {
+          days_ignored = day_picker.multiDatesPicker('getDates', 'object');
+          days_ignored = days_ignored.map(function(el) {
             return $.datepicker.formatDate('dd-mm-yy', el);
           });
-          $scope.bank_holidays.holidays = holidays.filter(function(date) {
-            return !isNaN(parseInt(date.split('-')));
+          $scope.holidays.days_ignored = days_ignored.filter(function(date) {
+            return !isNaN(date);
           });
-          if (!$scope.bank_holidays.id) {
-            promise = $repo.create("bank_holidays", $scope.bank_holidays);
+          if (!$scope.holidays.id) {
+            promise = $repo.create("holidays", $scope.holidays);
             promise.then(function(data) {
-              return $scope.bank_holidays = data;
+              return $scope.holidays = data;
             });
           } else {
-            promise = $repo.save($scope.bank_holidays);
+            promise = $repo.save($scope.holidays);
             promise.then(function(data) {
-              return $scope.bank_holidays = data;
+              return $scope.holidays = data;
             });
           }
           promise.then(function(data) {
@@ -172,7 +169,7 @@ angular.module("templates").run(["$templateCache", function($templateCache) {$te
 
   initBankHolidaysPlugin = function($tgUrls) {
     return $tgUrls.update({
-      "bank_holidays": "/bank_holidays"
+      "holidays": "/holidays"
     });
   };
 

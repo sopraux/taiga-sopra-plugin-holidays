@@ -31,5 +31,5 @@ class TaigaContribBankHolidaysAppConfig(AppConfig):
         from .api import BankHolidaysViewSet
 
         router = routers.DefaultRouter(trailing_slash=False)
-        router.register(r"holidays", BankHolidaysViewSet, base_name="holidays")
+        router.register(r"bank_holidays", BankHolidaysViewSet, base_name="bank_holidays")
         urlpatterns.append(url(r'^api/v1/', include(router.urls)))

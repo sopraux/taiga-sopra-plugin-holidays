@@ -1,0 +1,28 @@
+{
+  "name": "taiga-contrib-user-holidays",
+  "version": "0.1.0",
+  "description": "Taiga contrib plugin for user holidays",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taigaio/taiga-contrib-holidays"
+  },
+  "keywords": [
+    "user",
+    "holidays",
+    "taiga",
+    "include"
+  ],
+  "author": "David Peris <david.peris92@gmail.com>",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/taigaio/taiga-contrib-holidays/issues"
+  },
+  "homepage": "https://github.com/taigaio/taiga-contrib-holidays",
+  "dependencies": {
+    "jqui-multi-dates-picker": "latest",
+    "jquery-ui": "^1.11.4"
+  },
+  "devDependencies": {
+  }
+}

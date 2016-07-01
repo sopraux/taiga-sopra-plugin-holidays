@@ -11,7 +11,7 @@ div.holidays(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminContr
                 div.check
                     input(
                         type="checkbox" name="ignore_weekends"
-                        ng-model="bank_holidays.is_ignoring_weekends"
+                        ng-model="holidays.is_ignoring_weekends"
                         ng-change="changeWeekends()"
                     )
                     div
@@ -21,15 +21,15 @@ div.holidays(contrib-bank-holidays, ng-controller="ContribBankHolidaysAdminContr
             div.check-item
                 span Ignore specific days
                 div.check
-                    input(type="checkbox" name="ignore_days" ng-model="bank_holidays.is_ignoring_days")
+                    input(type="checkbox" name="ignore_days" ng-model="holidays.is_ignoring_days")
                     div
                     span.check-text.check-yes(translate="COMMON.YES")
                     span.check-text.check-no(translate="COMMON.NO")
         
             div.picker-container
                 div.button-container
-                    button.button-gray(id="reset_picker" ng-show="bank_holidays.is_ignoring_days") RESET
-                div.picker(id="day_picker" ng-show="bank_holidays.is_ignoring_days")
+                    button.button-gray(id="reset_picker" ng-show="holidays.is_ignoring_days") RESET
+                div.picker(id="day_picker" ng-show="holidays.is_ignoring_days")
 
 
         button.button-green.save-button(

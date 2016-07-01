@@ -1,5 +1,5 @@
 ###
-#  Taiga-contrib-holidays is a taiga plugin for manage bank holidays.
+#  Taiga-contrib-holidays is a taiga plugin for manage user holidays.
 #
 #  Copyright 2016 by Sopra Steria
 #  Copyright 2016 by David Peris <david.peris92@gmail.com>
@@ -21,7 +21,7 @@ debounce = (wait, func) ->
     return _.debounce(func, wait, {leading: true, trailing: false})
 
 
-class BankHolidaysAdmin
+class UserHolidaysSettings
     @.$inject = [
         "$rootScope",
         "$scope",
@@ -32,21 +32,21 @@ class BankHolidaysAdmin
     ]
 
     constructor: (@rootScope, @scope, @repo, @appMetaService, @confirm, @http) ->
-        @scope.sectionName = "Bank holidays" # i18n
-        @scope.sectionSlug = "bank holidays"
+        @scope.sectionName = "User holidays" # i18n
+        @scope.sectionSlug = "user holidays"
 
         @scope.$on "project:loaded", =>
-            promise = @repo.queryMany("bank_holidays", {project: @scope.projectId})
+            promise = @repo.queryMany("holidays", {project: @scope.projectId})
 
             promise.then (bank_holidays) =>
-                @scope.bank_holidays = {
+                @scope.holidays = {
                     project: @scope.projectId,
                     is_ignoring_weekends: false,
                     is_ignoring_days: false,
-                    holidays: []
+                    days_ignored: []
                 }
                 if bank_holidays.length > 0
-                    @scope.bank_holidays = bank_holidays[0]
+                    @scope.holidays = bank_holidays[0]
 
                 day_picker = $('#day_picker')
 
@@ -55,28 +55,27 @@ class BankHolidaysAdmin
                     dateFormat: 'yy-mm-dd'
                 })
 
-                if @scope.bank_holidays.is_ignoring_weekends
+                if @scope.holidays.is_ignoring_weekends
                     day_picker.multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends })
 
 
-                holidays = @array_str_to_date @scope.bank_holidays.holidays
+                days_ignored = @array_str_to_date @scope.holidays.days_ignored
 
-                if holidays? and holidays.length > 0
-                    day_picker.multiDatesPicker 'addDates', holidays
+                if days_ignored.length > 0
+                    day_picker.multiDatesPicker 'addDates', days_ignored
 
 
     array_str_to_date: (array) ->
-        if array? and array.length > 0
-            result = array.substr(1, array.length-2).split('"').join('')
-            result = result.split(',')
-            result = result.map( (el) -> new Date(el.trim()) )
+        result = array.substr(1, array.length-2).split('"').join('')
+        result = result.split(',')
+        result = result.map( (el) -> new Date(el.trim()) )
 
 
 
 BankHolidaysDirective = ($repo, $confirm, $loading) ->
     link = ($scope, $el, $attrs) ->
         $scope.changeWeekends = () =>
-            if $scope.bank_holidays.is_ignoring_weekends
+            if $scope.holidays.is_ignoring_weekends
                 day_picker.multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends })
             else
                 day_picker.multiDatesPicker({ beforeShowDay: () -> [true] })
@@ -91,18 +90,18 @@ BankHolidaysDirective = ($repo, $confirm, $loading) ->
                 .target(submitButton)
                 .start()
 
-            holidays = day_picker.multiDatesPicker 'getDates', 'object'
-            holidays = holidays.map( (el) -> $.datepicker.formatDate 'dd-mm-yy', el )
-            $scope.bank_holidays.holidays = holidays.filter( (date) -> !isNaN(parseInt(date.split('-'))) )
+            days_ignored = day_picker.multiDatesPicker 'getDates', 'object'
+            days_ignored = days_ignored.map( (el) -> $.datepicker.formatDate 'dd-mm-yy', el )
+            $scope.holidays.days_ignored = days_ignored.filter( (date) -> !isNaN(date) )
 
-            if not $scope.bank_holidays.id
-                promise = $repo.create("bank_holidays", $scope.bank_holidays)
+            if not $scope.holidays.id
+                promise = $repo.create("holidays", $scope.holidays)
                 promise.then (data) ->
-                    $scope.bank_holidays = data
+                    $scope.holidays = data
             else
-                promise = $repo.save($scope.bank_holidays)
+                promise = $repo.save($scope.holidays)
                 promise.then (data) ->
-                    $scope.bank_holidays = data
+                    $scope.holidays = data
 
             promise.then (data)->
                 currentLoading.finish()
@@ -139,6 +138,6 @@ module.directive("contribBankHolidays", ["$tgRepo", "$tgConfirm", "$tgLoading", 
 
 initBankHolidaysPlugin = ($tgUrls) ->
     $tgUrls.update({
-        "bank_holidays": "/bank_holidays"
+        "holidays": "/holidays"
     })
 module.run(["$tgUrls", initBankHolidaysPlugin])
