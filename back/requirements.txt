@@ -1,0 +1,1 @@
+djorm-pgarray==1.2 
