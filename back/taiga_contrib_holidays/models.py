@@ -18,7 +18,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###
 from django.db import models
-from djorm_pgarray.fields import DateArrayField
 from django.utils.translation import ugettext_lazy as _
 
 from .helpers import str_to_date
@@ -29,21 +28,21 @@ class BankHolidays(models.Model):
                                 related_name="bank_holidays")
 
     is_ignoring_weekends = models.NullBooleanField(default=False, null=True, blank=True,
-                                     verbose_name=_("is ignoring weekends"))
+                                      verbose_name=_("is ignoring weekends"))
     is_ignoring_days = models.NullBooleanField(default=False, null=True, blank=True,
                                      verbose_name=_("is ignoring specific days"))
-    days_ignored = DateArrayField(blank=True, null=True,
-                                      default=[],
-                                      verbose_name=_("days ignored in burndown"))
+
+
+class DateIgnored(models.Model):
+    bank_holidays = models.ForeignKey(BankHolidays, related_name = "days_ignored", on_delete=models.CASCADE)
+    date = models.DateField(default=None, blank=True, null=True, verbose_name=_("day ignored in burndown"))
 
 
     def create(self, *args, **kwargs):
-        days_ignored = map(str_to_date, self.days_ignored)
-        self.days_ignored = filter(None, days_ignored)
+        self.date = map(str_to_date, self.date)
         super().create(*args, **kwargs)
 
 
     def save(self, *args, **kwargs):
-        days_ignored = map(str_to_date, self.days_ignored)
-        self.days_ignored = filter(None, days_ignored)
+        self.date = map(str_to_date, self.date)
         super().save(*args, **kwargs)
