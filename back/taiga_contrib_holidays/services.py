@@ -31,8 +31,7 @@ def get_working_days(milestone):
     holidays, created       = BankHolidays.objects.get_or_create(project=project)
     is_ignoring_weekends    = holidays.is_ignoring_weekends
     is_ignoring_days        = holidays.is_ignoring_days
-    days_ignored            = holidays.days_ignored.all
-    print (days_ignored)
+    days_ignored            = holidays.days_ignored
 
     current_date    = milestone.estimated_start
     days_list       = []

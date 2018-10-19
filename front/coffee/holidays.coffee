@@ -35,10 +35,8 @@ class BankHolidaysAdmin
         @scope.sectionName = "Bank holidays" # i18n
         @scope.sectionSlug = "bank holidays"
 
-        @scope.$on "project:loaded", =>
-            promise = @repo.queryMany("holidays", {project: @scope.projectId})
-
-            promise.then (bank_holidays) =>
+        @repo.queryMany("holidays", {project: @scope.projectId})
+            .then (bank_holidays) =>
                 @scope.holidays = {
                     project: @scope.projectId,
                     is_ignoring_weekends: false,
@@ -58,14 +56,15 @@ class BankHolidaysAdmin
                 if @scope.holidays.is_ignoring_weekends
                     day_picker.multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends })
 
-
-                days_ignored = @array_str_to_date @scope.holidays.days_ignored
+                days_ignored = @array_str_to_date(@scope.holidays.days_ignored)
 
                 if days_ignored.length > 0
-                    day_picker.multiDatesPicker 'addDates', days_ignored
+                    day_picker.multiDatesPicker('addDates', days_ignored)
 
 
-    array_str_to_date: (array) ->
+    array_str_to_date: (array = []) ->
+        if (!array || !array.length) 
+            return []
         result = array.substr(1, array.length-2).split('"').join('')
         result = result.split(',')
         result = result.map( (el) -> new Date(el.trim()) )
@@ -91,9 +90,8 @@ BankHolidaysDirective = ($repo, $confirm, $loading) ->
                 .start()
 
             days_ignored = day_picker.multiDatesPicker 'getDates', 'object'
-            days_ignored = days_ignored.map( (el) -> $.datepicker.formatDate 'dd-mm-yy', el )
-            $scope.holidays.days_ignored = days_ignored.filter( (date) -> !isNaN(date) )
-
+            $scope.holidays.days_ignored = days_ignored.map( (el) -> $.datepicker.formatDate 'yy-mm-dd', el )
+            
             if not $scope.holidays.id
                 promise = $repo.create("holidays", $scope.holidays)
                 promise.then (data) ->

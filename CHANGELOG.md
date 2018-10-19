@@ -1,5 +1,9 @@
 # Changelog #
 
+## 1.0.0 (2016-06-28)
+- Updated patch for Taiga v3.4.5
+- Fixed problem with days_ignored
+
 ## 0.1.0 (2016-06-28)
 - Added date picker for custom holidays
 
