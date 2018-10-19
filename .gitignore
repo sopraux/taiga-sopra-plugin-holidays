@@ -1,6 +1,7 @@
 *.pyc
 *.egg
 *.egg-info
+.vscode
 back/taiga_contrib_holidays/__pycache__/
 back/.eggs/
 back/env
