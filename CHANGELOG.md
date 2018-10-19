@@ -1,6 +1,9 @@
 # Changelog #
 
-## 1.0.0 (2016-06-28)
+## 1.1.0 (2018-10-19)
+- Added days to burndown
+
+## 1.0.0 (2018-10-19)
 - Updated patch for Taiga v3.4.5
 - Fixed problem with days_ignored
 
