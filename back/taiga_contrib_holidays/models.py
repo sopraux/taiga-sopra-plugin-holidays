@@ -19,8 +19,7 @@
 ###
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-from .helpers import str_to_date
+from django.contrib.postgres.fields import ArrayField
 
 
 class BankHolidays(models.Model):
@@ -32,17 +31,5 @@ class BankHolidays(models.Model):
     is_ignoring_days = models.NullBooleanField(default=False, null=True, blank=True,
                                      verbose_name=_("is ignoring specific days"))
 
-
-class DateIgnored(models.Model):
-    bank_holidays = models.ForeignKey(BankHolidays, related_name = "days_ignored", on_delete=models.CASCADE)
-    date = models.DateField(default=None, blank=True, null=True, verbose_name=_("day ignored in burndown"))
-
-
-    def create(self, *args, **kwargs):
-        self.date = map(str_to_date, self.date)
-        super().create(*args, **kwargs)
-
-
-    def save(self, *args, **kwargs):
-        self.date = map(str_to_date, self.date)
-        super().save(*args, **kwargs)
+    days_ignored = ArrayField(models.DateField(default=None, blank=True, null=True), 
+                            blank=True, null=True, default=None, verbose_name=_("days ignored in burndown"))

@@ -10,10 +10,10 @@ Installation
 
 #### Taiga Back
 
-In your Taiga back python virtualenv install the pip package `taiga-contrib-holidays` with:
+In your Taiga back python virtualenv install the pip package `taiga-sopra-plugin-holidays` with:
 
 ```bash
-  pip install ../taiga-contrib-holidays/back
+  pip install ../taiga-sopra-plugin-holidays/back
 ```
 
 Modify in `taiga-back` your `settings/local.py` and include the line:
@@ -27,18 +27,18 @@ Then run the migrations to generate the new need table and apply the patch:
 ```bash
   python manage.py makemigrations taiga_contrib_holidays
   python manage.py migrate taiga_contrib_holidays
-  python ../taiga-contrib-holidays/back/patch/patch-taiga-holidays.py .
+  python ../taiga-sopra-plugin-holidays/back/patch/patch-taiga-holidays.py .
 ```
 
 #### Taiga Front
 
-Download in your `dist/plugins/` directory of Taiga front the `taiga-contrib-holidays` compiled code (you need subversion in your system):
+Download in your `dist/plugins/` directory of Taiga front the `taiga-sopra-plugin-holidays` compiled code (you need subversion in your system):
 
 ```bash
   cd taiga-front-dist/dist
   mkdir -p plugins
   cd plugins
-  cp -r ../../../taiga-contrib-holidays/front/dist holidays
+  cp -r ../../../taiga-sopra-plugin-holidays/front/dist holidays
 ```
 
 Include in your `dist/conf.json` in the `contribPlugins` list the value `"/plugins/holidays/holidays.json"`:
@@ -62,7 +62,7 @@ Clone the repo and
   cd taiga-back
   virtualenv env
   source env/bin/activate
-  pip install -e ../taiga-contrib-holidays/back
+  pip install -e ../taiga-sopra-plugin-holidays/back
 ```
 
 Modify in `taiga-back` your `settings/local.py` and include the line:
@@ -76,7 +76,7 @@ Then run the migrations to generate the new need table:
 ```bash
   python manage.py makemigrations taiga_contrib_holidays
   python manage.py migrate taiga_contrib_holidays
-  python ../taiga-contrib-holidays/back/patch/patch-taiga-holidays.py .
+  python ../taiga-sopra-plugin-holidays/back/patch/patch-taiga-holidays.py .
 ```
 
 #### Taiga Front
@@ -87,7 +87,7 @@ After clone the repo link `dist` in `taiga-front` plugins directory:
   cd taiga-front/dist
   mkdir -p plugins
   cd plugins
-  ln -s ../../../taiga-contrib-holidays/front/dist holidays
+  ln -s ../../../taiga-sopra-plugin-holidays/front/dist holidays
 ```
 
 Include in your `dist/conf.json` in the `contribPlugins` list the value `"/plugins/holidays/holidays.json"`:
@@ -101,7 +101,7 @@ Include in your `dist/conf.json` in the `contribPlugins` list the value `"/plugi
 ...
 ```
 
-In the plugin source dir `taiga-contrib-holidays/front` run
+In the plugin source dir `taiga-sopra-plugin-holidays/front` run
 
 ```bash
 npm install
